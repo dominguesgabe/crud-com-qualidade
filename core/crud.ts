@@ -1,15 +1,20 @@
 import fs from 'fs'
+import { v4 as uuid } from 'uuid'
 
 const DB_PATH = './core/db'
+
+type UUID = string
 
 interface Todo {
     date: string
     content: string
     done: boolean
+    id: UUID
 }
 
-function create(content: string) {
+function create(content: string): Todo {
     const todo: Todo = {
+        id: uuid(),
         date: new Date().toISOString(),
         content: content,
         done: false,
@@ -21,7 +26,7 @@ function create(content: string) {
     ]
 
     fs.writeFileSync(DB_PATH, JSON.stringify({todos}, null, 2))
-    return content
+    return todo
 }
 
 function read(): Todo[] {
@@ -35,12 +40,43 @@ function read(): Todo[] {
     return dbData.todos
 }
 
+function update(id: UUID, partialTodo: Partial<Todo>): Todo {
+    let updatedTodo
+    const todos: Todo[] = read()
+
+    todos.forEach(todo => {
+        if (todo.id === id) {
+            updatedTodo = Object.assign(todo, partialTodo)
+        }
+    })
+
+    fs.writeFileSync(DB_PATH, JSON.stringify(todos, null, 2))
+
+    if (!updatedTodo) {
+        throw new Error('please provide a valid ID')
+    }
+
+    return updatedTodo
+}
+
+function deleteById(id: UUID) {
+    const todos: Todo[] = read()
+
+    const filteredTodos: Todo[] = todos.filter(todo => id !== todo.id)
+
+    fs.writeFileSync(DB_PATH, JSON.stringify(filteredTodos, null, 2)) 
+}
+
 function clearDB() {
     fs.writeFileSync(DB_PATH, "")
 }
 
 clearDB()
 create('laranjas e limões')
-create('maçãs e maracujás')
+const secondTodo = create('maçãs e maracujás')
 
-console.log(read())
+update(secondTodo.id, { content: 'cupuaçú e abacaxis' })
+
+deleteById(secondTodo.id)
+
+read()
