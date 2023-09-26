@@ -1,5 +1,5 @@
 import fs from "fs";
-import { v4 as uuid } from "uuid";
+// import { v4 as uuid } from "uuid";
 
 const DB_PATH = "./core/db";
 
@@ -12,68 +12,67 @@ interface Todo {
   id: UUID;
 }
 
-function create(content: string): Todo {
-  const todo: Todo = {
-    id: uuid(),
-    date: new Date().toISOString(),
-    content: content,
-    done: false,
-  };
+// function create(content: string): Todo {
+//   const todo: Todo = {
+//     id: uuid(),
+//     date: new Date().toISOString(),
+//     content: content,
+//     done: false,
+//   };
 
-  const todos: Todo[] = [...read(), todo];
+//   const todos: Todo[] = [...read(), todo];
 
-  fs.writeFileSync(DB_PATH, JSON.stringify({ todos }, null, 2));
-  return todo;
-}
+//   fs.writeFileSync(DB_PATH, JSON.stringify({ todos }, null, 2));
+//   return todo;
+// }
 
-function read(): Todo[] {
-  const stringDB = fs.readFileSync(DB_PATH, "utf-8");
-  const dbData = JSON.parse(stringDB || "{}");
-
-  if (!dbData.todos) {
+export function read(): Array<Todo> {
+  const dbString = fs.readFileSync(DB_PATH, "utf-8");
+  const db = JSON.parse(dbString || "{}");
+  if (!db.todos) {
     return [];
   }
 
-  return dbData.todos;
+  return db.todos;
 }
 
-function update(id: UUID, partialTodo: Partial<Todo>): Todo {
-  let updatedTodo;
-  const todos: Todo[] = read();
+// function update(id: UUID, partialTodo: Partial<Todo>): Todo {
+//   let updatedTodo;
+//   const todos: Todo[] = read();
 
-  todos.forEach((todo) => {
-    if (todo.id === id) {
-      updatedTodo = Object.assign(todo, partialTodo);
-    }
-  });
+//   todos.forEach((todo) => {
+//     if (todo.id === id) {
+//       updatedTodo = Object.assign(todo, partialTodo);
+//     }
+//   });
 
-  fs.writeFileSync(DB_PATH, JSON.stringify(todos, null, 2));
+//   fs.writeFileSync(DB_PATH, JSON.stringify(todos, null, 2));
 
-  if (!updatedTodo) {
-    throw new Error("please provide a valid ID");
-  }
+//   if (!updatedTodo) {
+//     throw new Error("please provide a valid ID");
+//   }
 
-  return updatedTodo;
-}
+//   return updatedTodo;
+// }
 
-function deleteById(id: UUID) {
-  const todos: Todo[] = read();
+// function deleteById(id: UUID) {
+//   const todos: Todo[] = read();
 
-  const filteredTodos: Todo[] = todos.filter((todo) => id !== todo.id);
+//   const filteredTodos: Todo[] = todos.filter((todo) => id !== todo.id);
 
-  fs.writeFileSync(DB_PATH, JSON.stringify(filteredTodos, null, 2));
-}
+//   fs.writeFileSync(DB_PATH, JSON.stringify(filteredTodos, null, 2));
+// }
 
-function clearDB() {
-  fs.writeFileSync(DB_PATH, "");
-}
+// function clearDB() {
+//   fs.writeFileSync(DB_PATH, "");
+// }
 
-clearDB();
-create("laranjas e limões");
-const secondTodo = create("maçãs e maracujás");
+// clearDB();
+// create("laranjas e limões");
+// const secondTodo = create("maçãs e maracujás");
 
-update(secondTodo.id, { content: "cupuaçú e abacaxis" });
+// update(secondTodo.id, { content: "cupuaçú e abacaxis" });
 
-deleteById(secondTodo.id);
+// deleteById(secondTodo.id);
 
-read();
+// read();

@@ -25,7 +25,6 @@ module.exports = {
   ignorePatterns: ["node_modules/"],
   // Cherry of the Cake
   rules: {
-    "no-console": "error",
     "react/no-unknown-property": ["error", { ignore: ["jsx", "global"] }],
   },
 };
