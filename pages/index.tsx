@@ -11,9 +11,10 @@ interface HomeTodo {
 
 export default function Home() {
   const [todos, setTodos] = useState<HomeTodo[]>([]);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
-    todoController.get().then((todos) => setTodos(todos));
+    todoController.get({ page }).then(({ todos }) => setTodos(todos));
   }, []);
 
   return (
@@ -78,10 +79,10 @@ export default function Home() {
               </td>
             </tr> */}
 
-            {/* <tr>
+            <tr>
               <td colSpan={4} align="center" style={{ textAlign: "center" }}>
-                <button data-type="load-more">
-                  Carregar mais{" "}
+                <button data-type="load-more" onClick={() => setPage(page + 1)}>
+                  Página {page}, Carregar mais{" "}
                   <span
                     style={{
                       display: "inline-block",
@@ -93,7 +94,7 @@ export default function Home() {
                   </span>
                 </button>
               </td>
-            </tr> */}
+            </tr>
           </tbody>
         </table>
       </section>
