@@ -12,25 +12,18 @@ function get({
   page,
   limit,
 }: TodoRepositoryGetParams): Promise<TodoRepositoryGetOutput> {
-  return fetch("/api/todos").then(async (response) => {
-    const rawTodos = await response.text();
-    const serverTodos = parseServerTodos(JSON.parse(rawTodos)).todos;
-    console.log(page);
-    console.log(limit);
+  return fetch(`/api/todos?page=${page}&limit=${limit}`).then(
+    async (response) => {
+      const rawTodos = await response.text();
+      const parsedResponse = parseServerTodos(JSON.parse(rawTodos));
 
-    const ALL_TODOS = serverTodos;
-    const startIndex = (page - 1) * limit;
-    const endIndex = page * limit;
-    const paginatedTodos = ALL_TODOS.slice(startIndex, endIndex);
-
-    const totalPages = Math.ceil(ALL_TODOS.length / limit);
-
-    return {
-      todos: paginatedTodos,
-      total: ALL_TODOS.length,
-      pages: totalPages,
-    };
-  });
+      return {
+        total: parsedResponse.total,
+        pages: parsedResponse.pages,
+        todos: parsedResponse.todos,
+      };
+    }
+  );
 }
 
 export const todoRepository = {
@@ -44,14 +37,22 @@ interface Todo {
   done: boolean;
 }
 
-function parseServerTodos(responseBody: unknown): { todos: Todo[] } {
+function parseServerTodos(responseBody: unknown): {
+  total: number;
+  pages: number;
+  todos: Todo[];
+} {
   if (
     responseBody &&
     typeof responseBody === "object" &&
     "todos" in responseBody &&
+    "total" in responseBody &&
+    "pages" in responseBody &&
     Array.isArray(responseBody.todos)
   ) {
     return {
+      total: Number(responseBody.total),
+      pages: Number(responseBody.pages),
       todos: responseBody.todos.map((todo: unknown) => {
         if (todo === null && typeof todo !== "object") {
           throw new Error("Invalid todo from API");
@@ -75,6 +76,8 @@ function parseServerTodos(responseBody: unknown): { todos: Todo[] } {
   }
 
   return {
+    pages: 1,
+    total: 0,
     todos: [],
   };
 }
