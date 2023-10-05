@@ -15,9 +15,15 @@ export default function Home() {
   const [todos, setTodos] = useState<HomeTodo[]>([]);
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
+  const [search, setSearch] = useState("");
+
+  const homeTodos = todoController.filterTodosByContent<HomeTodo>(
+    todos,
+    search
+  );
 
   const hasMorePages = totalPages > page;
-  const hasNoTodos = todos.length === 0 && !isLoading;
+  const hasNoTodos = homeTodos.length === 0 && !isLoading;
 
   useEffect(() => {
     setInitialLoadComplete(true);
@@ -32,6 +38,10 @@ export default function Home() {
         .finally(() => setIsLoading(false));
     }
   }, []);
+
+  // function handleSearch(event: React.ChangeEvent<HTMLInputElement>) {
+  //   setSearch(event.target.value);
+  // }
 
   return (
     <main>
@@ -54,7 +64,13 @@ export default function Home() {
 
       <section>
         <form>
-          <input type="text" placeholder="Filtrar lista atual, ex: Dentista" />
+          <input
+            type="text"
+            onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
+              setSearch(event.target.value)
+            }
+            placeholder="Filtrar lista atual, ex: Dentista"
+          />
         </form>
 
         <table border={1}>
@@ -70,7 +86,7 @@ export default function Home() {
           </thead>
 
           <tbody>
-            {todos.map((todo) => (
+            {homeTodos.map((todo) => (
               <tr key={todo.id}>
                 <td>
                   <input type="checkbox" />
