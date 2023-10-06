@@ -4,66 +4,18 @@
       "id": "36ad1891-e386-4a52-a98c-d24a5d65a83f",
       "date": "2023-10-06T20:40:48.928Z",
       "content": "testar",
-      "done": false
+      "done": true
     },
     {
       "id": "3aad1891-e386-4a52-a98c-d24a5d65a83f",
       "date": "2023-10-06T20:40:48.928Z",
       "content": "todo 2",
-      "done": false
+      "done": true
     },
     {
-      "id": "f3e11e79-8963-4338-b957-c1038f733cac",
-      "date": "2023-10-06T20:44:59.132Z",
-      "content": "todo3",
-      "done": false
-    },
-    {
-      "id": "834f6a0a-f1c1-4fd4-9d3a-cede2c820b18",
-      "date": "2023-10-06T20:45:03.163Z",
-      "content": "todo4",
-      "done": false
-    },
-    {
-      "id": "3ecf46cd-4bc8-437a-a811-fbf81cf55ccb",
-      "date": "2023-10-06T20:45:07.757Z",
-      "content": "todo5",
-      "done": false
-    },
-    {
-      "id": "4de5b332-bb53-4357-9516-c5850b78f7d6",
-      "date": "2023-10-06T20:45:17.830Z",
-      "content": "todo 6",
-      "done": false
-    },
-    {
-      "id": "a350d8e5-c365-410c-901c-739528d3e2eb",
-      "date": "2023-10-06T20:45:57.653Z",
-      "content": "agora mais 1",
-      "done": false
-    },
-    {
-      "id": "c81c91c1-f11e-452e-b276-2238a93ada34",
-      "date": "2023-10-06T20:46:07.034Z",
-      "content": "mais 1",
-      "done": false
-    },
-    {
-      "id": "3f83cb97-c579-4a60-b016-6b2f34e56808",
-      "date": "2023-10-06T20:55:32.352Z",
-      "content": "asdf",
-      "done": false
-    },
-    {
-      "id": "5d909256-87ab-4c30-846f-3818b1cfd991",
-      "date": "2023-10-06T20:56:58.091Z",
-      "content": "sdf",
-      "done": false
-    },
-    {
-      "id": "87917598-219d-41d7-bc66-43566076b934",
-      "date": "2023-10-06T20:57:22.660Z",
-      "content": "asd",
+      "id": "bbf2cd99-7c40-4221-aa6b-82a3eb2d06cd",
+      "date": "2023-10-06T22:00:51.201Z",
+      "content": "alemanha",
       "done": false
     }
   ]

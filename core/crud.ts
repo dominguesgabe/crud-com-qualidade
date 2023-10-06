@@ -36,9 +36,9 @@ export function read(): Array<Todo> {
   return db.todos;
 }
 
-// function update(id: UUID, partialTodo: Partial<Todo>): Todo {
+// export function update(id: UUID, partialTodo: Partial<Todo>): Todo {
 //   let updatedTodo;
-//   const todos: Todo[] = read();
+//   const todos = read();
 
 //   todos.forEach((todo) => {
 //     if (todo.id === id) {
@@ -54,6 +54,34 @@ export function read(): Array<Todo> {
 
 //   return updatedTodo;
 // }
+
+export function update(id: UUID, partialTodo: Partial<Todo>): Todo {
+  let updatedTodo;
+  const todos = read();
+  todos.forEach((currentTodo) => {
+    const isToUpdate = currentTodo.id === id;
+    if (isToUpdate) {
+      updatedTodo = Object.assign(currentTodo, partialTodo);
+    }
+  });
+
+  fs.writeFileSync(
+    DB_PATH,
+    JSON.stringify(
+      {
+        todos,
+      },
+      null,
+      2
+    )
+  );
+
+  if (!updatedTodo) {
+    throw new Error("Please, provide another ID!");
+  }
+
+  return updatedTodo;
+}
 
 // function deleteById(id: UUID) {
 //   const todos: Todo[] = read();
