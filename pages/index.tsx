@@ -16,6 +16,7 @@ export default function Home() {
   const [page, setPage] = useState(1);
   const [isLoading, setIsLoading] = useState(true);
   const [search, setSearch] = useState("");
+  const [newTodoContent, setNewTodoContent] = useState("");
 
   const homeTodos = todoController.filterTodosByContent<HomeTodo>(
     todos,
@@ -40,9 +41,9 @@ export default function Home() {
     }
   }, []);
 
-  // function handleSearch(event: React.ChangeEvent<HTMLInputElement>) {
-  //   setSearch(event.target.value);
-  // }
+  function newTodoHandler(event: React.ChangeEvent<HTMLInputElement>) {
+    setNewTodoContent(event.target.value);
+  }
 
   return (
     <main>
@@ -55,8 +56,29 @@ export default function Home() {
         <div className="typewriter">
           <h1>O que fazer hoje?</h1>
         </div>
-        <form>
-          <input type="text" placeholder="Correr, Estudar..." />
+        <form
+          onSubmit={(event) => {
+            event.preventDefault();
+            todoController.create({
+              content: newTodoContent,
+              onSuccess(todo: HomeTodo) {
+                setTodos((oldTodos) => {
+                  return [...oldTodos, todo];
+                });
+              },
+              onError() {
+                alert("Você não pode criar uma tarefa vazia.");
+              },
+            });
+            setNewTodoContent("");
+          }}
+        >
+          <input
+            type="text"
+            onChange={newTodoHandler}
+            value={newTodoContent}
+            placeholder="Correr, Estudar..."
+          />
           <button type="submit" aria-label="Adicionar novo item">
             +
           </button>

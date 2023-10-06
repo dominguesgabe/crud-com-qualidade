@@ -19,7 +19,35 @@ function filterTodosByContent<Todo>(
   });
 }
 
+interface TodoControllerCreateParams {
+  content?: string;
+  onError: () => void;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  onSuccess: (todo: any) => void;
+}
+
+async function create({
+  content,
+  onSuccess,
+  onError,
+}: TodoControllerCreateParams) {
+  if (!content) {
+    onError();
+    return;
+  }
+
+  const todo = {
+    id: "1",
+    content,
+    date: new Date(),
+    done: false,
+  };
+
+  onSuccess(todo);
+}
+
 export const todoController = {
   get,
+  create,
   filterTodosByContent,
 };

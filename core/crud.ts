@@ -1,5 +1,5 @@
 import fs from "fs";
-// import { v4 as uuid } from "uuid";
+import { v4 as uuid } from "uuid";
 
 const DB_PATH = "./core/db";
 
@@ -12,19 +12,19 @@ interface Todo {
   id: UUID;
 }
 
-// function create(content: string): Todo {
-//   const todo: Todo = {
-//     id: uuid(),
-//     date: new Date().toISOString(),
-//     content: content,
-//     done: false,
-//   };
+export function create(content: string): Todo {
+  const todo: Todo = {
+    id: uuid(),
+    date: new Date().toISOString(),
+    content: content,
+    done: false,
+  };
 
-//   const todos: Todo[] = [...read(), todo];
+  const todos: Todo[] = [...read(), todo];
 
-//   fs.writeFileSync(DB_PATH, JSON.stringify({ todos }, null, 2));
-//   return todo;
-// }
+  fs.writeFileSync(DB_PATH, JSON.stringify({ todos }, null, 2));
+  return todo;
+}
 
 export function read(): Array<Todo> {
   const dbString = fs.readFileSync(DB_PATH, "utf-8");
