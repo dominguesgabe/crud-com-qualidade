@@ -36,25 +36,6 @@ export function read(): Array<Todo> {
   return db.todos;
 }
 
-// export function update(id: UUID, partialTodo: Partial<Todo>): Todo {
-//   let updatedTodo;
-//   const todos = read();
-
-//   todos.forEach((todo) => {
-//     if (todo.id === id) {
-//       updatedTodo = Object.assign(todo, partialTodo);
-//     }
-//   });
-
-//   fs.writeFileSync(DB_PATH, JSON.stringify(todos, null, 2));
-
-//   if (!updatedTodo) {
-//     throw new Error("please provide a valid ID");
-//   }
-
-//   return updatedTodo;
-// }
-
 export function update(id: UUID, partialTodo: Partial<Todo>): Todo {
   let updatedTodo;
   const todos = read();
@@ -83,24 +64,19 @@ export function update(id: UUID, partialTodo: Partial<Todo>): Todo {
   return updatedTodo;
 }
 
-// function deleteById(id: UUID) {
-//   const todos: Todo[] = read();
+export function deleteById(id: UUID) {
+  const todos: Todo[] = read();
 
-//   const filteredTodos: Todo[] = todos.filter((todo) => id !== todo.id);
+  const filteredTodos: Todo[] = todos.filter((todo) => id !== todo.id);
 
-//   fs.writeFileSync(DB_PATH, JSON.stringify(filteredTodos, null, 2));
-// }
-
-// function clearDB() {
-//   fs.writeFileSync(DB_PATH, "");
-// }
-
-// clearDB();
-// create("laranjas e limões");
-// const secondTodo = create("maçãs e maracujás");
-
-// update(secondTodo.id, { content: "cupuaçú e abacaxis" });
-
-// deleteById(secondTodo.id);
-
-// read();
+  fs.writeFileSync(
+    DB_PATH,
+    JSON.stringify(
+      {
+        todos: filteredTodos,
+      },
+      null,
+      2
+    )
+  );
+}
