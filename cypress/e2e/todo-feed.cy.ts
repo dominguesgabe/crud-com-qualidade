@@ -22,11 +22,11 @@ describe("/ - Todos Feed", () => {
 
     cy.visit(BASE_URL);
 
-    const $inputAddTodo = cy.get("input[name='add-todo']");
-    $inputAddTodo.type("Ir para academia");
+    cy.get("input[name='add-todo']").as("inputAddTodo");
+    cy.get("@inputAddTodo").type("Ir para academia");
 
-    const $buttonAddTodo = cy.get("button[aria-label='Adicionar novo item']");
-    $buttonAddTodo.click();
+    cy.get("button[aria-label='Adicionar novo item']").as("buttonAddTodo");
+    cy.get("@buttonAddTodo").click();
 
     cy.get("table > tbody").contains("Ir para academia");
   });
@@ -70,8 +70,8 @@ describe("/ - Todos Feed", () => {
 
     cy.visit(BASE_URL);
 
-    const $inputSearchTodo = cy.get("input[name='search-todo']");
-    $inputSearchTodo.type("banho");
+    cy.get("input[name='search-todo']").as("inputSearchTodo");
+    cy.get("@inputSearchTodo").type("banho");
 
     cy.get("table > tbody").contains("dar banho no peixe");
     cy.get("table > tbody").contains("tomar banho");
