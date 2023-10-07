@@ -9,4 +9,4 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: "Lint"
-        run: "echo 'olá mundão'"
+        run: "npm run lint"
