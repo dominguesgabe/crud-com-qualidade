@@ -7,7 +7,7 @@ interface TodoControllerGetParams {
 }
 
 async function get(params: TodoControllerGetParams) {
-  return todoRepository.get({ page: params.page, limit: 2 });
+  return todoRepository.get({ page: params.page, limit: 6 });
 }
 
 function filterTodosByContent<Todo>(
@@ -51,7 +51,7 @@ interface TodoControllerToggleDoneParams {
   onError: () => void;
 }
 
-function toggleDone({
+async function toggleDone({
   id,
   updateTodoOnScreen,
   onError,
@@ -66,9 +66,14 @@ function toggleDone({
     });
 }
 
+async function deleteById(id: string): Promise<void> {
+  await todoRepository.deleteById(id);
+}
+
 export const todoController = {
   get,
   create,
   filterTodosByContent,
   toggleDone,
+  deleteById,
 };
