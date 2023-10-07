@@ -76,6 +76,7 @@ export default function Home() {
         >
           <input
             type="text"
+            name="add-todo"
             onChange={newTodoHandler}
             value={newTodoContent}
             placeholder="Correr, Estudar..."
@@ -90,6 +91,7 @@ export default function Home() {
         <form>
           <input
             type="text"
+            name="search-todo"
             onChange={(event: React.ChangeEvent<HTMLInputElement>) =>
               setSearch(event.target.value)
             }

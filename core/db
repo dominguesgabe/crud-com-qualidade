@@ -1,3 +1,28 @@
 {
-  "todos": []
+  "todos": [
+    {
+      "id": "34543-456345-345686-23464-234",
+      "date": "2023-03-27T00:41:744Z",
+      "content": "dormir 8h",
+      "done": true
+    },
+    {
+      "id": "15675-456345-345686-23464-234",
+      "date": "2023-03-17T00:41:744Z",
+      "content": "dar banho no peixe",
+      "done": true
+    },
+    {
+      "id": "34532-456345-345686-23464-234",
+      "date": "2023-03-27T00:41:744Z",
+      "content": "Programar pokedéx",
+      "done": false
+    },
+    {
+      "id": "34532-456345-345686-23464-234",
+      "date": "2023-03-27T00:41:744Z",
+      "content": "tomar banho",
+      "done": false
+    }
+  ]
 }

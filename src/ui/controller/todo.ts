@@ -55,15 +55,11 @@ async function toggleDone({
   id,
   updateTodoOnScreen,
   onError,
-}: TodoControllerToggleDoneParams): void {
+}: TodoControllerToggleDoneParams) {
   todoRepository
     .toggleDone(id)
-    .then(() => {
-      updateTodoOnScreen();
-    })
-    .catch(() => {
-      onError();
-    });
+    .then(() => updateTodoOnScreen())
+    .catch(() => onError());
 }
 
 async function deleteById(id: string): Promise<void> {
