@@ -3,131 +3,189 @@ import { todoRepository } from "@server/repository/todo";
 import { NextApiRequest, NextApiResponse } from "next";
 import { z as schema } from "zod";
 
-async function get(req: NextApiRequest, res: NextApiResponse) {
-  const query = req.query;
+async function get(req: Request) {
+  const { searchParams } = new URL(req.url);
+
+  const query = {
+    page: searchParams.get("page"),
+    limit: searchParams.get("limit"),
+  };
   const page = Number(query.page);
   const limit = Number(query.limit);
 
   if (query.page && isNaN(page)) {
-    res.status(400).json({
-      error: {
-        message: "Page must be a number",
-      },
-    });
-    return;
+    return new Response(
+      JSON.stringify({
+        error: {
+          message: "Page must be a number",
+        },
+      }),
+      {
+        status: 400,
+      }
+    );
   }
 
   if (query.limit && isNaN(limit)) {
-    res.status(400).json({
-      error: {
-        message: "Limit must be a number",
-      },
-    });
-    return;
+    return new Response(
+      JSON.stringify({
+        error: {
+          message: "Limit must be a number",
+        },
+      }),
+      {
+        status: 400,
+      }
+    );
   }
 
   const output = await todoRepository.get({
     page: Number(query.page),
     limit: Number(query.limit),
   });
-  res.status(200).json(output);
+
+  return new Response(
+    JSON.stringify({
+      total: output.total,
+      pages: output.pages,
+      todos: output.todos,
+    }),
+    {
+      status: 200,
+    }
+  );
 }
 
 const todoCreateBodySchema = schema.object({
   content: schema.string().min(1, { message: "Required" }),
 });
 
-async function create(req: NextApiRequest, res: NextApiResponse) {
-  const body = todoCreateBodySchema.safeParse(req.body);
+async function create(req: Request) {
+  const body = todoCreateBodySchema.safeParse(await req.json());
 
   if (!body.success) {
-    res.status(400).json({
-      error: {
-        message: "Todo must have content",
-        description: body.error.issues,
-      },
-    });
-    return;
+    return new Response(
+      JSON.stringify({
+        error: {
+          message: "Todo must have content",
+          description: body.error.issues,
+        },
+      }),
+      {
+        status: 400,
+      }
+    );
   }
 
   try {
     const createdTodo = await todoRepository.createByContent(body.data.content);
 
-    res.status(201).json({
-      todo: createdTodo,
-    });
+    return new Response(
+      JSON.stringify({
+        todo: createdTodo,
+      }),
+      {
+        status: 201,
+      }
+    );
   } catch (error) {
-    res.status(400).json({
-      error: {
-        message: error,
-      },
-    });
+    return new Response(
+      JSON.stringify({
+        error: {
+          message: error,
+        },
+      }),
+      {
+        status: 400,
+      }
+    );
   }
 }
 
-async function toggleDone(req: NextApiRequest, res: NextApiResponse) {
-  const todoIdSchema = schema.string().uuid().safeParse(req.query.id);
-  // const todoId = req.query.id;
+async function toggleDone(id: string) {
+  const todoIdSchema = schema.string().uuid().safeParse(id);
 
   if (!todoIdSchema.success) {
-    res.status(400).json({
-      error: {
-        message: "You must provide a valid ID",
-      },
-    });
-    return;
+    return new Response(
+      JSON.stringify({
+        error: {
+          message: "You must provide a valid ID",
+        },
+      }),
+      {
+        status: 400,
+      }
+    );
   }
 
   try {
     const updatedTodo = await todoRepository.toggleDone(todoIdSchema.data);
-
-    res.status(200).json({
-      todo: updatedTodo,
-    });
+    return new Response(
+      JSON.stringify({
+        todo: updatedTodo,
+      }),
+      {
+        status: 200,
+      }
+    );
   } catch (error) {
     if (error instanceof HttpNotFoundError) {
-      res.status(error.status).json({
-        error: {
-          message: error.message,
-        },
-      });
+      return new Response(
+        JSON.stringify({
+          error: {
+            message: error.message,
+          },
+        }),
+        {
+          status: error.status,
+        }
+      );
     }
 
-    res.status(500).json({
-      error: {
-        message: "Internal server error.",
-      },
-    });
+    return new Response(
+      JSON.stringify({
+        error: {
+          message: "Internal server error.",
+        },
+      }),
+      {
+        status: 500,
+      }
+    );
   }
 }
 
-async function deleteById(req: NextApiRequest, res: NextApiResponse) {
-  const querySchema = schema.object({
-    id: schema.string().uuid().min(1),
-  });
+async function deleteById(id: string) {
+  const querySchema = schema.string().uuid().min(1);
 
-  const parsedParams = querySchema.safeParse(req.query);
+  const parsedParams = querySchema.safeParse(id);
 
   if (!parsedParams.success) {
-    return res.status(400).json({
-      error: {
-        message: "You must provide a valid ID.",
-      },
-    });
+    return new Response(
+      JSON.stringify({
+        error: {
+          message: "You must provide a valid ID.",
+        },
+      }),
+      { status: 400 }
+    );
   }
 
   try {
-    const todoId = parsedParams.data.id;
+    const todoId = parsedParams.data;
 
     await todoRepository.deleteById(todoId);
-    return res.status(204).end();
+    return new Response(null, { status: 204 });
   } catch (error) {
     if (error instanceof HttpNotFoundError) {
-      return res.status(error.status).json({
-        error: {
-          message: error.message,
-        },
-      });
+      return new Response(
+        JSON.stringify({
+          error: {
+            message: error.message,
+          },
+        }),
+        { status: error.status }
+      );
     }
   }
 }
