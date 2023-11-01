@@ -3,65 +3,102 @@ import { todoRepository } from "@server/repository/todo";
 import { NextApiRequest, NextApiResponse } from "next";
 import { z as schema } from "zod";
 
-async function get(req: NextApiRequest, res: NextApiResponse) {
-  const query = req.query;
+async function get(req: Request) {
+  const { searchParams } = new URL(req.url);
+
+  const query = {
+    page: searchParams.get("page"),
+    limit: searchParams.get("limit"),
+  };
   const page = Number(query.page);
   const limit = Number(query.limit);
 
   if (query.page && isNaN(page)) {
-    res.status(400).json({
-      error: {
-        message: "Page must be a number",
-      },
-    });
-    return;
+    return new Response(
+      JSON.stringify({
+        error: {
+          message: "Page must be a number",
+        },
+      }),
+      {
+        status: 400,
+      }
+    );
   }
 
   if (query.limit && isNaN(limit)) {
-    res.status(400).json({
-      error: {
-        message: "Limit must be a number",
-      },
-    });
-    return;
+    return new Response(
+      JSON.stringify({
+        error: {
+          message: "Limit must be a number",
+        },
+      }),
+      {
+        status: 400,
+      }
+    );
   }
 
   const output = await todoRepository.get({
     page: Number(query.page),
     limit: Number(query.limit),
   });
-  res.status(200).json(output);
+
+  return new Response(
+    JSON.stringify({
+      total: output.total,
+      pages: output.pages,
+      todos: output.todos,
+    }),
+    {
+      status: 200,
+    }
+  );
 }
 
 const todoCreateBodySchema = schema.object({
   content: schema.string().min(1, { message: "Required" }),
 });
 
-async function create(req: NextApiRequest, res: NextApiResponse) {
-  const body = todoCreateBodySchema.safeParse(req.body);
+async function create(req: Request) {
+  const body = todoCreateBodySchema.safeParse(await req.json());
 
   if (!body.success) {
-    res.status(400).json({
-      error: {
-        message: "Todo must have content",
-        description: body.error.issues,
-      },
-    });
-    return;
+    return new Response(
+      JSON.stringify({
+        error: {
+          message: "Todo must have content",
+          description: body.error.issues,
+        },
+      }),
+      {
+        status: 400,
+      }
+    );
   }
 
   try {
     const createdTodo = await todoRepository.createByContent(body.data.content);
 
-    res.status(201).json({
-      todo: createdTodo,
-    });
+    return new Response(
+      JSON.stringify({
+        todo: createdTodo,
+      }),
+      {
+        status: 201,
+      }
+    );
   } catch (error) {
-    res.status(400).json({
-      error: {
-        message: error,
-      },
-    });
+    return new Response(
+      JSON.stringify({
+        error: {
+          message: error,
+        },
+      }),
+      {
+        status: 400,
+      }
+    );
   }
 }
 
