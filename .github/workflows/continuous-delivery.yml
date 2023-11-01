@@ -11,5 +11,5 @@ jobs:
       - uses: actions/checkout@v3
       - name: "Install dependendcies"
         run: "npm ci"
-      - name: "Lint"
-        run: "npx vercel --prod"
+      - name: "Deploy"
+        run: "npx vercel --prod --token=muH4JZz1x9jMoKPsiAnGWbRD"
