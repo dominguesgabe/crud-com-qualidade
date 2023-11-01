@@ -1,8 +1,16 @@
 name: "[CD] Continuous Delivery"
 
+# on:
+#   pull_request:
+#     types: [opened, synchronize]
+
 on:
   push:
     branches: [main]
+
+env:
+  VERCEL_ORG_ID: team_mto8fzSd5i3z9qcyH6wLxo7b
+  VERCEL_PROJECT_ID: prj_pUT2gtygKYLe9S28QyyPGPlkX7It
 
 jobs:
   deploy:
@@ -11,5 +19,5 @@ jobs:
       - uses: actions/checkout@v3
       - name: "Install dependendcies"
         run: "npm ci"
-      - name: "Lint"
-        run: "npx vercel --prod"
+      - name: "Deploy"
+        run: "npx vercel --prod --token=${{ secrets.VERCEL_TOKEN }}"
