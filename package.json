@@ -19,6 +19,7 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
+    "@supabase/supabase-js": "^2.38.4",
     "@types/node": "^20.5.7",
     "@types/uuid": "^9.0.3",
     "cypress": "^13.3.0",
