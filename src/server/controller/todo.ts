@@ -50,11 +50,19 @@ async function create(req: NextApiRequest, res: NextApiResponse) {
     return;
   }
 
-  const createdTodo = await todoRepository.createByContent(body.data.content);
+  try {
+    const createdTodo = await todoRepository.createByContent(body.data.content);
 
-  res.status(201).json({
-    todo: createdTodo,
-  });
+    res.status(201).json({
+      todo: createdTodo,
+    });
+  } catch (error) {
+    res.status(400).json({
+      error: {
+        message: error,
+      },
+    });
+  }
 }
 
 async function toggleDone(req: NextApiRequest, res: NextApiResponse) {
