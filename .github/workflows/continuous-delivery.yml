@@ -1,0 +1,15 @@
+name: "[CD] Continuous Delivery"
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: "Install dependendcies"
+        run: "npm ci"
+      - name: "Lint"
+        run: "npx vercel --prod"
