@@ -26,7 +26,10 @@ async function get(req: NextApiRequest, res: NextApiResponse) {
     return;
   }
 
-  const output = todoRepository.get({ page: query.page, limit: query.limit });
+  const output = todoRepository.get({
+    page: Number(query.page),
+    limit: Number(query.limit),
+  });
   res.status(200).json(output);
 }
 
@@ -55,18 +58,20 @@ async function create(req: NextApiRequest, res: NextApiResponse) {
 }
 
 async function toggleDone(req: NextApiRequest, res: NextApiResponse) {
-  const todoId = req.query.id;
+  const todoIdSchema = schema.string().uuid().safeParse(req.query.id);
+  // const todoId = req.query.id;
 
-  if (!todoId || typeof todoId !== "string") {
+  if (!todoIdSchema.success) {
     res.status(400).json({
       error: {
         message: "You must provide a valid ID",
       },
     });
+    return;
   }
 
   try {
-    const updatedTodo = await todoRepository.toggleDone(todoId);
+    const updatedTodo = await todoRepository.toggleDone(todoIdSchema.data);
 
     res.status(200).json({
       todo: updatedTodo,
